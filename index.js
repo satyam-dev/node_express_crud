@@ -3,6 +3,7 @@ const Joi = require("@hapi/joi");
 const app = express();
 const logger = require("./middlewares/logger");
 const morgan = require("morgan");
+const config = require("config");
 app.use(express.json()); // using middleware express.json() to enable json parsing in request body
 app.use(express.urlencoded({ extended: true })); // middleware to parse formdata to json. Extended true parese complex data like array etc
 app.use(logger); // customer middleware example
@@ -10,7 +11,8 @@ app.use(express.static("public")); // hosting static assets
 
 console.log(`Environment via process: ${process.env.NODE_ENV}`); // environment is undefined when not set
 console.log(`Environment via express: ${app.get("env")}`); // environment is development when not set
-
+console.log("Config: ", config.get("name"));
+console.log("Password: ", config.get("mail.password"));
 if (app.get("env") === "development") {
   app.use(morgan("tiny")); // 3rd party middleware use to log http request
 }
