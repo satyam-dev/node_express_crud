@@ -4,6 +4,8 @@ const app = express();
 const logger = require("./middlewares/logger");
 const morgan = require("morgan");
 const config = require("config");
+const startupDebugger = require("debug")("app:startup");
+const dbDebugger = require("debug")("app:db");
 app.use(express.json()); // using middleware express.json() to enable json parsing in request body
 app.use(express.urlencoded({ extended: true })); // middleware to parse formdata to json. Extended true parese complex data like array etc
 app.use(logger); // customer middleware example
@@ -13,6 +15,16 @@ console.log(`Environment via process: ${process.env.NODE_ENV}`); // environment 
 console.log(`Environment via express: ${app.get("env")}`); // environment is development when not set
 console.log("Config: ", config.get("name"));
 console.log("Password: ", config.get("mail.password"));
+/*
+Using dependency 'debug' we can allow different debug messages in console.
+require('debug') returns a function, which expects a namespace.
+require('debug)(<namespace>) provides a function, which can be used to log data
+We then set the env variable DEBUG to the namespace for which we wanna see the debug info
+example: export DEBUG=app:startup will show all the debug messages for namespace app:startup
+
+*/
+startupDebugger("Hi from startup debugger!");
+dbDebugger("Hi from db debugger!");
 if (app.get("env") === "development") {
   app.use(morgan("tiny")); // 3rd party middleware use to log http request
 }
